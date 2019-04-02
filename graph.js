@@ -30,9 +30,11 @@ function getPosition(canvas, event) {
     
     
     
-    var test = VerifPoint(x,y);
-    
-    if (test > -1){
+    var i = VerifPoint(x,y);
+    console.log(i);
+	console.log(pointSelectione);
+	
+    if (i > -1){
     console.log("Déjà un point ici");
   } else {
     CreatePoint(x,y);
@@ -45,23 +47,26 @@ function VerifPoint(x,y){
    console.log('test1');
    
   for (i=0;i<rang;i++){
-  console.log('test2');
+	console.log('test2');
     Xmin = posX[i]-3;
     Xmax = posX[i]+3;
     Ymin = posY[i]-3;
     Ymax = posY[i]+3;
     
-    console.log(Xmin);
-    
-    if ((x<Xmin)&&(x>Xmax)) {
-      
-      if((y<Ymin)&&(y>Ymax)) {
+    console.log("Xmin = "+Xmin);
+
+    console.log("x ="+x);
 	
-	pointSelectione = i;
-	
-	return i;
+    if ((x < Xmin) || (x > Xmax)) {
+		console.log("i = "+i);
+		
+		if((y < Ymin) || (y > Ymax)) {
+			pointSelectione = i;
+			console.log("i = "+i);
+			return i;
       }
-    }
+    } 
+	
   }
   return -1;
     
