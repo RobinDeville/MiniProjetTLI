@@ -9,8 +9,13 @@ var posY = new Array();
 var id = document.getElementById("graph");
 var context = id.getContext("2d");
 var rang = 0;
+var rangLigne = 0;
 var pointSelectione = -1;
 var test = 0;
+var XDebut = -1;
+var YDebut = -1;
+var XFin = -1;
+var YFin = 0;
 
 function Click() {
 document.getElementById("graph").onmousedown  = function(event) {
@@ -31,11 +36,12 @@ function getPosition(canvas, event) {
     
     
     var j = VerifPoint(x,y);
-    console.log("j = "+j);
-   // console.log("pointSelectione = "+pointSelectione);
+    //console.log("j = "+j);
+    console.log("pointSelectione = "+pointSelectione);
 	
     if (j >= -1){
       console.log("Déjà un point ici");
+      StockCoord(pointSelectione);
     } else {
       CreatePoint(x,y);
   }
@@ -47,24 +53,24 @@ function VerifPoint(x,y){
    console.log('début VerifPoint');
    
    for (i=0;i<rang;i++) {
-    console.log('début Boucle');
-    console.log('i = '+i);
-    Xmin = posX[i]-3;
-    Xmax = posX[i]+3;
-    Ymin = posY[i]-3;
-    Ymax = posY[i]+3;
+    //console.log('début Boucle');
+    //console.log('i = '+i);
+    Xmin = posX[i]-5;
+    Xmax = posX[i]+5;
+    Ymin = posY[i]-5;
+    Ymax = posY[i]+5;
     
-    console.log("Xmin = "+Xmin);
-    console.log("Xmax = "+Xmax);
-    console.log("x ="+x);
+    //console.log("Xmin = "+Xmin);
+    //console.log("Xmax = "+Xmax);
+    //console.log("x ="+x);
 	
-    if ((x < Xmin) || (x > Xmax)) {
-		console.log("(test X) i = "+i);
-		console.log("x est bien plus petit que Xmin ou plus grand que Xmax");
+    if ((x < Xmin) || (x > Xmax) || (y < Ymin) || (y > Ymax)) {
+		//console.log("(test X) i = "+i);
+		//console.log("x est bien plus petit que Xmin ou plus grand que Xmax");
 		
 		if((y < Ymin) || (y > Ymax)) {
-			pointSelectione = i-1;
-			console.log("y est bien plus petit que Ymin ou plus grand que Ymax");
+			pointSelectione = i;
+			//console.log("y est bien plus petit que Ymin ou plus grand que Ymax");
 			
 		}
 
@@ -80,9 +86,9 @@ function VerifPoint(x,y){
 }
   
 
-
 function CreatePoint(x,y) {
-   
+   XDebut = -1;
+   YDebut = -1;
    context.fillStyle = "#FF0000";
    context.beginPath();
    context.arc(x, y, 6, 0, Math.PI * 2, true);
@@ -97,4 +103,40 @@ function CreatePoint(x,y) {
    //console.log(posX);
    
    
+}
+
+function StockCoord(pointSelectione){
+    
+  console.log("XDebut = "+XDebut);	
+  
+    if ((XDebut == -1) || (YDebut == -1)) {
+      console.log("Stockage des coordonnées du point de départ de la ligne");
+      console.log("Coordonnées du point sélectionné : x = "+posX[pointSelectione+1]+", y = "+posY[pointSelectione+1]);
+      XDebut = posX[pointSelectione+1];
+      YDebut = posY[pointSelectione+1];
+    } else {
+      console.log("Stockage des coordonnées du point d'arrivé de la ligne");
+      console.log("Coordonnées du point sélectionné : x = "+posX[pointSelectione+1]+", y = "+posY[pointSelectione+1]);
+      XFin = posX[pointSelectione+1];
+      YFin = posY[pointSelectione+1];
+      
+      
+
+      console.log("Traçage en partant du point "+XDebut+","+YDebut+" vers le point "+XFin+","+YFin+"...");
+      context.beginPath();
+      context.strokeStyle =  "#00b33c";
+      console.log("tracé en cours...");	
+      context.lineWidth = 5;
+      context.moveTo(XDebut,YDebut);
+      context.lineTo(XFin,YFin);
+      context.stroke();
+      XDebut = -1;
+      YDebut = -1;
+      //repaint();
+      
+    }
+      
+      XFin = -1;
+      YFin = -1;
+    console.log("Après boucle : XDebut = "+XDebut);
 }
