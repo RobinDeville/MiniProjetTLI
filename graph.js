@@ -30,53 +30,58 @@ function getPosition(canvas, event) {
     
     
     
-    var i = VerifPoint(x,y);
-    console.log(i);
-	console.log(pointSelectione);
+    var j = VerifPoint(x,y);
+    console.log("j = "+j);
+   // console.log("pointSelectione = "+pointSelectione);
 	
-    if (i > -1){
-    console.log("Déjà un point ici");
-  } else {
-    CreatePoint(x,y);
+    if (j >= -1){
+      console.log("Déjà un point ici");
+    } else {
+      CreatePoint(x,y);
   }
   
 }
   
 
 function VerifPoint(x,y){
-   console.log('test1');
+   console.log('début VerifPoint');
    
-  for (i=0;i<rang;i++){
-	console.log('test2');
+   for (i=0;i<rang;i++) {
+    console.log('début Boucle');
+    console.log('i = '+i);
     Xmin = posX[i]-3;
     Xmax = posX[i]+3;
     Ymin = posY[i]-3;
     Ymax = posY[i]+3;
     
     console.log("Xmin = "+Xmin);
-
+    console.log("Xmax = "+Xmax);
     console.log("x ="+x);
 	
     if ((x < Xmin) || (x > Xmax)) {
-		console.log("i = "+i);
+		console.log("(test X) i = "+i);
+		console.log("x est bien plus petit que Xmin ou plus grand que Xmax");
 		
 		if((y < Ymin) || (y > Ymax)) {
-			pointSelectione = i;
-			console.log("i = "+i);
-			return i;
-      }
-    } 
+			pointSelectione = i-1;
+			console.log("y est bien plus petit que Ymin ou plus grand que Ymax");
+			
+		}
+
+      
+    } else {
+      return -1;
+    }
+    
 	
   }
-  return -1;
+  
     
 }
   
 
 
 function CreatePoint(x,y) {
-   
-    
    
    context.fillStyle = "#FF0000";
    context.beginPath();
@@ -86,7 +91,7 @@ function CreatePoint(x,y) {
    
    posX[rang] = x;
    posY[rang] = y;
-   
+   console.log(" posY[rang] "+ posY[rang]);
    rang++;
    
    //console.log(posX);
