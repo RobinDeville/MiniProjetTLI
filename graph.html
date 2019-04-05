@@ -11,15 +11,18 @@
     <h1>Mini-Projet TLI</h1>
     <h2>Maxence Bohard | Robin Devillebichot</h2>
     
-    <div style="border:3px">
-	<canvas id="graph" width="400" height="400" style="border:solid 3px"></canvas>
+    <div style="border:3px" onkeydown="supprPoint(event)">
+	<canvas id="graph" width="400" height="400" style="border:solid 3px" ></canvas>
     </div>
     
     <input type="button" Value = "Reset" onclick="window.location.reload()">
 	
     
     <script src="graph.js"></script>
-	<input type="button" Value = "Orienté" onclick="oriente = false; RedessineTout();">
+	<input type="button" Value = "Orienté" onclick="fnOriente();">
+	<input type="button" Value = "PageRank" onclick="PageRank();">
+	<br/>
+	<div id="idPageRank"></div>
     
   </body>
   
