@@ -19,10 +19,10 @@ var test = 0;
 var mousedownID= -1;
 var draggedVerticleId = -1;
 var mouseDragged = -1;
-var oriente = true;
-var decalFleche=10;
+var oriente = false;
+var decalFleche=20;
 var LongFleche=10;
-var LargFleche=3;
+var LargFleche=10;
 
 document.getElementById("graph").onmousedown = function(event) {
 	event = event || window.event;
@@ -32,10 +32,20 @@ document.getElementById("graph").onmousedown = function(event) {
 	//console.log("position souris"+event.pageX);
 	mousedownID=VerifPoint(posXMouse,posYMouse);
 	getPosition(this, event);
+	
+	
 	//console.log("test"+posXMouse);
 	//console.log(event.pageX, this.offsetLeft);
 }
 
+
+document.addEventListener("keydown", function(event){
+  console.log(event.which);
+  keyCode = event.which;
+  if (keyCode == 46){
+	  supprPoint();
+  }
+})
 
 
 document.getElementById("graph").onmousemove = function(event) {
@@ -52,38 +62,31 @@ document.getElementById("graph").onmousemove = function(event) {
 }
 
 
-
 document.getElementById("graph").onmouseup = function(event) {
 	event = event || window.event;
 	event.preventDefault();
 	mousedownID = -1;
 }
 
+
 function drawArrow(xDebut,yDebut,xFin,yFin){
-	var LongTrait=((xFin-xDebut)/2)+((yFin-yDebut)/2);
 	
-	xFinp=xFin-decalFleche*(xFin-xDebut)/LongTrait;yFinp=yFin-decalFleche*(yFin-yDebut)/LongTrait; 
-	xC=xFinp+LongFleche*(xDebut-xFinp)/LongTrait;
-	yC=yFinp+LongFleche*(yDebut-yFinp)/LongTrait;
+	//console.log("traçage flèche");
 	
-	xD=xC+LargFleche*(-(yFinp-yDebut))/LongTrait;
-	yD=yC+LargFleche*((xFinp-xDebut))/LongTrait; 
-	
-	xE=xC-LargFleche*(-(yFinp-yDebut))/LongTrait;
-	yE=yC-LargFleche*((xFinp-xDebut))/LongTrait; 
-	
-	context.beginPath(); 
-	context.moveTo(xDebut,yDebut);
-	context.lineTo(xFinp,yFinp); 
-	context.stroke();
-	
-	context.beginPath(); 
+	AB=Norm(xDebut,yDebut,xFin,yFin);
+	xC=xFin+LongFleche*(xDebut-xFin)/AB;
+	yC=yFin+LongFleche*(yDebut-yFin)/AB;
+	xD=xC+LargFleche*(-(yFin-yDebut))/AB;
+	yD=yC+LargFleche*((xFin-xDebut))/AB;
+	xE=xC-LargFleche*(-(yFin-yDebut))/AB;
+	yE=yC-LargFleche*((xFin-xDebut))/AB;
+	context.beginPath();
 	context.moveTo(xD,yD);
-	context.lineTo(xFinp,yFinp);
+	context.lineTo(xFin,yFin);
 	context.lineTo(xE,yE);
-	
 	context.stroke();
 }
+
 
 function getPosition(canvas, event) {    
     var abs = event.clientX;
@@ -142,7 +145,35 @@ function VerifPoint(x,y){
 	return -1;
 }
   
-
+  
+function supprPoint(){
+	// alert("test");
+	// var key = event.keyCode;
+	if (pointDebut == true){
+		delete posX[pointSelectione];
+		delete posY[pointSelectione];
+		
+		for (i=0;i<rangLigne;i++){
+			if (ligneDebut[i] == pointSelectione) {
+				console.log("Suppression de ligne "+i+" car pointSelectione ="+pointSelectione);
+				delete ligneDebut[i];
+				delete ligneFin[i];
+			// } else if (ligneFin[i] = pointSelectione){
+				// delete ligneFin[i];
+				// delete ligneDebut[i];
+			}
+		}
+		// rang = rang-1;
+		RedessineTout();
+	} else {
+		delete posX[pointSelectione];
+		delete posY[pointSelectione];
+		// rang=rang-1;
+		RedessineTout();
+	}
+}
+  
+  
 function RedessineTout(){
 	  
    var canvas=document.getElementById("graph");
@@ -167,9 +198,10 @@ function RedessineTout(){
 	  
 	  
 	  
-	  // if (oriente = true){
-		// drawArrow(XDebut,YDebut,XFin,YFin);
-	  // }
+	  if (oriente === true){
+		console.log(oriente);
+		drawArrow(XDebut,YDebut,XFin,YFin);
+	  }
 	  
   }
   
@@ -188,14 +220,25 @@ function RedessineTout(){
    context.font="30px, Veranda";
    context.fillStyle =  "#000000";
    context.fillWidth = 50;
-   context.fillText(i,posX[i],posY[i]);
+   context.fillText(i,posX[i]-2,posY[i]);
    context.stroke();
    
   }
   pointDebut = false;
   }
 
-  
+
+function fnOriente(){
+	if (oriente == false) {
+		oriente = true;
+		//alert("test1 "+oriente);
+		RedessineTout();
+	} else if (oriente == true){
+		//alert("test2 "+oriente);
+		oriente = false;
+		RedessineTout();
+	}
+}
   
   
 function fnTraceLigne(idPoint){
@@ -215,8 +258,9 @@ function fnTraceLigne(idPoint){
     ligneFin[rangLigne] = idPoint;
     console.log("ligneFin["+rangLigne+"] = "+idPoint+".");
     rangLigne++;
+	pointDebut = false;
     RedessineTout();
-    pointDebut = false;
+    
     
   }
 }
@@ -237,4 +281,51 @@ function CreatePoint(x,y) {
 }
 
 
-
+function Norm(xDebut,yDebut,xFin,yFin) {
+	return (Math.sqrt(Math.pow(xFin-xDebut,2)+Math.pow(yFin-yDebut,2))-20);
+	}
+	
+function PageRank(){
+	
+	nbPoint = 0;
+	var table = "<table border=\"1\" id=\"TableRank\" style=\"border:solid 1px\"><tr>PageRank</tr><tr><td>Points</td><td>Iteration 0</td><td>Iteration 1</td></tr>";
+	for (i=0;i<rang;i++){
+		if (posX[i] != undefined) {
+			nbPoint++;
+		}
+	}
+	//console.log("Rang = "+rang);
+	
+	var Pr0 = 1/nbPoint;
+	var comptPR1 = 0;
+	for (i=0;i<rang;i++){
+		var comptPR1 = 0;
+		if (posX[i] != 0){
+			valTestPoint = posX[i];
+			
+			for (j=0;j<rangLigne;j++){
+				valTestLigne = ligneFin[j];
+				
+				if (valTestLigne == valTestPoint){
+					comptPR1++;
+				}
+			}
+		}
+		console.log("comptPR1 = "+comptPR1);
+	}
+	
+	// Sélectionner le premier point (vérifier que la valeur n'est pas "undefined"
+	// PR0 d'un point = 1/nbPoint. 
+	//
+	// Vérifier si son index est présent dans xFin. Si oui, on va voir le xDebut associé, et on regarde combien de fois la valeur de ce xDebut est présente dns le tableau. On ajoute 1 à un comptPR1 à chaque fois. 
+	// PR1 = PR0 / comptPR1
+	// 
+	//
+	console.log("nbPoint ="+nbPoint);
+	table = table+"</table>";
+	document.getElementById("idPageRank").innerHTML = table;
+	
+}	
+	
+	
+	
